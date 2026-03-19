@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Lint entrypoint.sh with shellcheck
+        uses: ludeeus/action-shellcheck@master
+        with:
+          scandir: '.'
+
+      - name: Lint Dockerfile with hadolint
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: Dockerfile
+
+      - name: Validate docker-compose.yaml
+        run: docker compose -f docker-compose.yaml config --quiet
