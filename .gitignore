@@ -1,0 +1,19 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Linux
+*~
+.fuse_hidden*
+.Trash-*
+
+# Credentials and sensitive data
+authorized_keys
+bot_data/
+host_keys/
+
+# Docker
+*.env
+.env*
