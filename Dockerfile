@@ -29,6 +29,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN useradd -m -u 10001 -s /bin/bash bot
 
+# Propagated from the CI workflow to invalidate the download layer cache
+# when a new upstream release or base image update is detected.
+ARG UPSTREAM_VERSION="unknown"
+ARG DEBIAN_DIGEST="unknown"
+
 # All directories bot needs at runtime. /run/sshd is intentionally NOT created
 # here — it is mounted as tmpfs at runtime (see docker-compose.yaml) and the
 # mount point must be initialised by the entrypoint.
