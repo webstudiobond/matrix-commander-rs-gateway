@@ -1,8 +1,7 @@
 services:
   matrix-gw:
-    image: ghcr.io/webstudiobond/matrix-commander-rs-gateway:latest
     build:
-      context: https://github.com/webstudiobond/matrix-commander-rs-gateway.git#main
+      context: .
       args:
         # Pass host platform to BuildKit for multi-arch binary selection.
         TARGETARCH: ${TARGETARCH:-amd64}
