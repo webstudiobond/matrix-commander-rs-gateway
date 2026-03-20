@@ -3,6 +3,10 @@
 ## Containerised Matrix Gateway via SSH Tunnel
 
 [![CI](https://github.com/webstudiobond/matrix-commander-rs-gateway/actions/workflows/ci.yml/badge.svg)](https://github.com/webstudiobond/matrix-commander-rs-gateway/actions/workflows/ci.yml)
+[![GitHub last commit](https://img.shields.io/github/last-commit/webstudiobond/matrix-commander-rs-gateway)](https://github.com/webstudiobond/matrix-commander-rs-gateway/commits/main)
+[![GitHub issues](https://img.shields.io/github/issues/webstudiobond/matrix-commander-rs-gateway)](https://github.com/webstudiobond/matrix-commander-rs-gateway/issues)
+[![GitHub repo size](https://img.shields.io/github/repo-size/webstudiobond/matrix-commander-rs-gateway)](https://github.com/webstudiobond/matrix-commander-rs-gateway)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A minimal, hardened Docker container running [matrix-commander-rs](https://github.com/8go/matrix-commander-rs) behind an SSH reverse tunnel. Designed to serve as a secure Matrix protocol gateway — in this project specifically used to manage an [OpenWrt-based router](https://github.com/webstudiobond/matrix-bot-openwrt) via a Matrix bot, though the container is general-purpose and can back any matrix-commander-rs workflow.
 
@@ -23,7 +27,7 @@ The container exposes port `2222` bound exclusively to `localhost`, acting as th
     |
     | Docker port mapping
     v
-[matrix-bot container :2222]
+[matrix-gw container :2222]
     |
     | sshd — PubkeyAuthentication only, UsePAM=no
     v
@@ -75,10 +79,11 @@ The container does not bind to any public interface. All external access is funn
 .
 ├── Dockerfile
 ├── docker-compose.yaml
+├── docker-compose.dev.yaml    # For local builds and development
 ├── entrypoint.sh
-├── authorized_keys        # Remote client's SSH public key
-├── bot_data/              # Matrix session persistence
-└── host_keys/             # SSH host key persistence
+├── authorized_keys            # Remote client's SSH public key
+├── bot_data/                  # Matrix session persistence
+└── host_keys/                 # SSH host key persistence
 ```
 
 ---
@@ -87,7 +92,17 @@ The container does not bind to any public interface. All external access is funn
 
 > All paths below use `/home/user/matrix-commander-rs/` as an example. Replace `user` and the directory name with your actual username and preferred path.
 
-### 1. Clone the repository
+### 1. Obtain the deployment files
+
+**Option A: Quick Start (Recommended)**
+You only need the configuration file to use the pre-built image from GHCR.
+```bash
+mkdir -p /home/user/matrix-commander-rs && cd /home/user/matrix-commander-rs
+curl -O https://raw.githubusercontent.com/webstudiobond/matrix-commander-rs-gateway/main/docker-compose.yaml
+```
+
+**Option B: Local Development / Custom Build**
+If you intend to modify the source code or build locally, clone the repository:
 ```bash
 git clone git@github.com:webstudiobond/matrix-commander-rs-gateway.git /home/user/matrix-commander-rs
 cd /home/user/matrix-commander-rs
@@ -113,9 +128,19 @@ sudo chown 10001:10001 /home/user/matrix-commander-rs/authorized_keys
 chmod 0600 /home/user/matrix-commander-rs/authorized_keys
 ```
 
-### 4. Build the image
+### 4. Prepare the container
+
+**If using Option A (Quick Start):**
+Docker will automatically pull the pre-built image in the next step. No manual build is required.
+You can also manually force a build from the upstream repository using:
 ```bash
 docker compose -f /home/user/matrix-commander-rs/docker-compose.yaml build --no-cache
+```
+
+**If using Option B (Local Development):**
+Build the image locally using the development configuration file:
+```bash
+docker compose -f /home/user/matrix-commander-rs/docker-compose.dev.yaml build --no-cache
 ```
 
 ### 5. Initial Matrix session login
@@ -124,7 +149,7 @@ On first run, `matrix-commander-rs` requires interactive login to create its ses
 ```bash
 docker compose -f /home/user/matrix-commander-rs/docker-compose.yaml up -d
 
-docker compose -f /home/user/matrix-commander-rs/docker-compose.yaml exec -it matrix-bot /bin/bash
+docker compose -f /home/user/matrix-commander-rs/docker-compose.yaml exec -it matrix-gw /bin/bash
 ```
 
 Inside the container ([full CLI reference](https://github.com/8go/matrix-commander-rs?tab=readme-ov-file#usage)):
@@ -218,7 +243,7 @@ To build a multi-platform manifest:
 ```bash
 docker buildx build \
   --platform linux/amd64,linux/arm64 \
-  --tag yourregistry/matrix-bot:latest \
+  --tag yourregistry/matrix-gw:latest \
   --push .
 ```
 
