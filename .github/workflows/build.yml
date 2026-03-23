@@ -16,7 +16,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-      
+
     steps:
       - name: Check for upstream updates
         id: check
@@ -26,14 +26,14 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             https://api.github.com/repos/8go/matrix-commander-rs/releases/latest | jq -r .tag_name)
           DEBIAN_DIG=$(skopeo inspect docker://debian:trixie-slim | jq -r .Digest)
-          
+
           echo "matrix_ver=$MATRIX_VER" >> "$GITHUB_OUTPUT"
           echo "debian_dig=$DEBIAN_DIG" >> "$GITHUB_OUTPUT"
-          
+
           # GHCR requires strict lowercase repository names
           IMAGE_BASE=$(echo "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}" | tr '[:upper:]' '[:lower:]')
           echo "image_base=$IMAGE_BASE" >> "$GITHUB_OUTPUT"
-          
+
           # Fetch labels from the currently published latest image
           if skopeo inspect "docker://$IMAGE_BASE:latest" > meta.json 2>/dev/null; then
             OUR_MAT_VER=$(jq -r '.Labels["org.opencontainers.image.version"] // "none"' meta.json)
@@ -42,7 +42,7 @@ jobs:
             OUR_MAT_VER="none"
             OUR_DEB_DIG="none"
           fi
-          
+
           # Evaluate build necessity
           if [ "$MATRIX_VER" != "$OUR_MAT_VER" ] || [ "$DEBIAN_DIG" != "$OUR_DEB_DIG" ] || [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
             echo "needs_build=true" >> "$GITHUB_OUTPUT"
@@ -54,19 +54,19 @@ jobs:
 
       - name: Checkout repository
         if: steps.check.outputs.needs_build == 'true'
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v6.0.2
 
       - name: Set up QEMU
         if: steps.check.outputs.needs_build == 'true'
-        uses: docker/setup-qemu-action@v3.6.0
+        uses: docker/setup-qemu-action@v4.0.0
 
       - name: Set up Docker Buildx
         if: steps.check.outputs.needs_build == 'true'
-        uses: docker/setup-buildx-action@v3.10.0
+        uses: docker/setup-buildx-action@v4.0.0
 
       - name: Log in to the Container registry
         if: steps.check.outputs.needs_build == 'true'
-        uses: docker/login-action@v3.4.0
+        uses: docker/login-action@v4.0.0
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -74,7 +74,7 @@ jobs:
 
       - name: Build and push multi-arch image
         if: steps.check.outputs.needs_build == 'true'
-        uses: docker/build-push-action@v6.15.0
+        uses: docker/build-push-action@v7.0.0
         with:
           context: .
           push: true
