@@ -2,13 +2,13 @@
 
 ## Containerised Matrix Gateway via SSH Tunnel
 
-[![CI](https://github.com/webstudiobond/matrix-commander-rs-gateway/actions/workflows/ci.yml/badge.svg)](https://github.com/webstudiobond/matrix-commander-rs-gateway/actions/workflows/ci.yml)
-[![GitHub last commit](https://img.shields.io/github/last-commit/webstudiobond/matrix-commander-rs-gateway)](https://github.com/webstudiobond/matrix-commander-rs-gateway/commits/main)
-[![GitHub issues](https://img.shields.io/github/issues/webstudiobond/matrix-commander-rs-gateway)](https://github.com/webstudiobond/matrix-commander-rs-gateway/issues)
-[![GitHub repo size](https://img.shields.io/github/repo-size/webstudiobond/matrix-commander-rs-gateway)](https://github.com/webstudiobond/matrix-commander-rs-gateway)
+[![CI](https://github.com/underhax/matrix-commander-rs-gateway/actions/workflows/ci.yml/badge.svg)](https://github.com/underhax/matrix-commander-rs-gateway/actions/workflows/ci.yml)
+[![GitHub last commit](https://img.shields.io/github/last-commit/underhax/matrix-commander-rs-gateway)](https://github.com/underhax/matrix-commander-rs-gateway/commits/main)
+[![GitHub issues](https://img.shields.io/github/issues/underhax/matrix-commander-rs-gateway)](https://github.com/underhax/matrix-commander-rs-gateway/issues)
+[![GitHub repo size](https://img.shields.io/github/repo-size/underhax/matrix-commander-rs-gateway)](https://github.com/underhax/matrix-commander-rs-gateway)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A minimal, hardened Docker container running [matrix-commander-rs](https://github.com/8go/matrix-commander-rs) behind an SSH reverse tunnel. Designed to serve as a secure Matrix protocol gateway — in this project specifically used to manage an [OpenWrt-based router](https://github.com/webstudiobond/matrix-bot-openwrt) via a Matrix bot, though the container is general-purpose and can back any matrix-commander-rs workflow.
+A minimal, hardened Docker container running [matrix-commander-rs](https://github.com/8go/matrix-commander-rs) behind an SSH reverse tunnel. Designed to serve as a secure Matrix protocol gateway — in this project specifically used to manage an [OpenWrt-based router](https://github.com/underhax/matrix-bot-openwrt) via a Matrix bot, though the container is general-purpose and can back any matrix-commander-rs workflow.
 
 The container exposes port `2222` bound exclusively to `localhost`, acting as the inbound endpoint for an SSH reverse tunnel originating from a remote client (e.g. a router, an IoT device, or any SSH-capable host).
 
@@ -40,7 +40,7 @@ The container does not bind to any public interface. All external access is funn
 
 ## Related Projects
 
-- [matrix-bot-openwrt](https://github.com/webstudiobond/matrix-bot-openwrt) — A lightweight, POSIX shell–based Matrix bot for remote router management over the Matrix protocol.
+- [matrix-bot-openwrt](https://github.com/underhax/matrix-bot-openwrt) — A lightweight, POSIX shell–based Matrix bot for remote router management over the Matrix protocol.
 
 ---
 
@@ -98,13 +98,13 @@ The container does not bind to any public interface. All external access is funn
 You only need the configuration file to use the pre-built image from GHCR.
 ```bash
 mkdir -p /home/user/matrix-commander-rs && cd /home/user/matrix-commander-rs
-curl -O https://raw.githubusercontent.com/webstudiobond/matrix-commander-rs-gateway/main/docker-compose.yaml
+curl -O https://raw.githubusercontent.com/underhax/matrix-commander-rs-gateway/main/docker-compose.yaml
 ```
 
 **Option B: Local Development / Custom Build**
 If you intend to modify the source code or build locally, clone the repository:
 ```bash
-git clone git@github.com:webstudiobond/matrix-commander-rs-gateway.git /home/user/matrix-commander-rs
+git clone git@github.com:underhax/matrix-commander-rs-gateway.git /home/user/matrix-commander-rs
 cd /home/user/matrix-commander-rs
 ```
 
